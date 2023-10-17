@@ -1,0 +1,28 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllowance`(
+in salary int,out total_allowance bigint)
+BEGIN
+declare allowance bigint default 0;
+declare finished int default 0;
+declare curForEmp cursor for select allow_percent from allowances;
+
+declare continue handler for not found set finished=1;
+
+set total_allowance = 0;
+ open curForEmp ;
+ 
+ getAllowance:loop
+ 
+ fetch curForEmp into allowance;
+ if finished=1 then leave getAllowance;
+ end if;
+ set total_allowance=(salary*allowance/100)+total_allowance;
+ end loop getAllowance;
+					
+ close curForEmp;
+ 
+ 
+END;
+
+
+
+
